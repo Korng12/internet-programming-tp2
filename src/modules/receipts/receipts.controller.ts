@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Req, UseGuards } from "@nestjs/common";
 import { RecieptsService } from "./receipts.service";
 import { ApiKeyGuard } from "src/common/guards/api-key.gaurd";
 import { CreateReceiptDto } from "./dto/create-receipt.dto";
@@ -9,8 +9,9 @@ import { dot } from "node:test/reporters";
 export class ReceiptsController{
     constructor(private recieptsService:RecieptsService){}
     @Get()
-    findAll(){
+    findAll(@Req() req:any){
         console.log(process.env.API_KEY )
+        console.log(req.userName)
         return this.recieptsService.findAll()
     }
     @Post()

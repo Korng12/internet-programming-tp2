@@ -22,8 +22,8 @@ export class RecieptsService{
         const receipt =this.receiptRepo.create({
             issuedAt: new Date(dto.issuedAt),
             name:dto.name,
-            price: dto.price
-
+            price: dto.price,
+            order:{id:dto.orderId}
         })
         return this.receiptRepo.save(receipt);
     }

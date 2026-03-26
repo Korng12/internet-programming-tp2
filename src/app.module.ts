@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -6,16 +6,17 @@ import { ConfigModule } from '@nestjs/config';
 import { Receipt } from './modules/receipts/receipt.entity';
 import { ReceiptsModule } from './modules/receipts/receipts.module';
 import { OrderModule } from './modules/orders/order.module';
-
+import { Order } from './modules/orders/order.entiity';
+import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 @Module({
   imports: [
 
     ConfigModule.forRoot({
       isGlobal:true
     }),
+    OrderModule,
     ReceiptsModule,
     OrderModule,
-    
     TypeOrmModule.forRoot({
               type: 'postgres',
               host: 'localhost',
@@ -23,7 +24,7 @@ import { OrderModule } from './modules/orders/order.module';
               username: 'postgres',
               password: '123321',
               database: 'test',
-              entities: [Receipt],
+              entities: [Receipt,Order],
               synchronize: true,
           })
   ],
@@ -31,4 +32,10 @@ import { OrderModule } from './modules/orders/order.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware) // The middleware to apply
+      .forRoutes('receipts');     // The routes to apply it to
+  }
+}

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Order } from "../orders/order.entiity";
 
 @Entity()
 export class Receipt{
@@ -8,7 +9,10 @@ export class Receipt{
     name:string;
     @Column()
     price:number;
-    @Column({ type: 'timestamptz' }) // Includes timezone (Postgres)
+    @Column() // Includes timezone (Postgres)
     issuedAt:Date
+    @OneToOne(()=>Order,(order)=>order.receipt)
+    @JoinColumn()
+    order:Order;
 
 }
